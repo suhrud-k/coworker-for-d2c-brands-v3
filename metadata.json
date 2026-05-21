@@ -1,0 +1,8 @@
+{
+  "name": "CoWorker for D2C Brands",
+  "description": "Enterprise-grade financial dashboard for D2C brands, built with the Cashfree merchant design system for automated reconciliation and P&L intelligence.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
