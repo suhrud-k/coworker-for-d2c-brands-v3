@@ -5,7 +5,7 @@ import { getAgent } from '../data/agentsMockData';
 import { ESCALATIONS } from '../data/escalationsMockData';
 import type { AgentId } from '../v3Types';
 import { VendorsScreen } from './VendorsScreen';
-import { VeeraBriefPanel } from './VeeraBriefPanel';
+import { KrishanBriefPanel } from './KrishanBriefPanel';
 import { CashRunwayScreen } from './CashRunwayScreen';
 import { ChannelEconomicsScreen } from './ChannelEconomicsScreen';
 import { ReportsScreen } from './ReportsScreen';
@@ -41,10 +41,10 @@ export function AgentOffice({ agentId, initialOfficeTab, onBack, onOpenChat }: A
   }, [initialOfficeTab, agentId]);
 
   const renderContent = () => {
-    if (agentId === 'veera') {
+    if (agentId === 'krishan') {
       switch (officeTab) {
         case 'Brief':
-          return <VeeraBriefPanel />;
+          return <KrishanBriefPanel />;
         case 'Cash':
           return <CashRunwayScreen />;
         case 'Statements':
@@ -136,6 +136,23 @@ export function AgentOffice({ agentId, initialOfficeTab, onBack, onOpenChat }: A
           return <ReconciliationScreen />;
         case 'Returns & Recovery':
           return <ReturnsRecoveryScreen />;
+        case 'Claims':
+          return (
+            <div className="space-y-6">
+              <SectionHeader title="Marketplace claims" subtitle="Resolved and pending · Flipkart, Myntra, Amazon" />
+              <Card className="!flex !flex-col !items-start text-left gap-3 border-l-4 border-l-success">
+                <StatusPill status="success" text="Resolved — review" />
+                <div className="text-[15px] font-semibold text-gray-900">Claim #FK-2398 · Flipkart</div>
+                <p className="text-[13px] text-gray-600">₹68,400 credited 17 May. Matches filed amount. Rohan verified against settlement file.</p>
+                <button type="button" className="btn-primary h-9 px-4 text-[13px]">Verify & close</button>
+              </Card>
+              <Card>
+                <div className="text-[13px] font-medium text-gray-500 mb-3">Open claims (&gt;30 days)</div>
+                <div className="text-[20px] font-bold text-gray-900 tabular-nums">₹3.84 L</div>
+                <p className="text-[12px] text-gray-500 mt-1">2 claims awaiting marketplace response</p>
+              </Card>
+            </div>
+          );
         default:
           return <OfficePlaceholder title={officeTab} />;
       }

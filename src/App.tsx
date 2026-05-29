@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Home, Plug, Users, Menu } from 'lucide-react';
 import { cn } from './lib/utils';
-import type { Tab, TeamView, AgentId, ChatPage } from './v3Types';
-import { CFO_AGENT_ID } from './data/agentsMockData';
-import { PRIORITY_CARDS } from './data/priorityCardsMockData';
+import type { Tab, TeamView, AgentId, ChatPage, OfficeDeepLink } from './v3Types';
 import { ConnectionsScreen } from './components/ConnectionsScreen';
 import { TeamChatPanel } from './components/TeamChatPanel';
+import { StatusRail } from './components/StatusRail';
 import { AgentOffice } from './components/AgentOffice';
 import {
   TeamNavStrip,
@@ -16,7 +15,6 @@ import {
   ActivityView,
   EscalationsView,
 } from './components/TeamViews';
-import { StatusPill } from './components/shared/ui';
 
 const SIDEBAR_KEY = 'coworker-v3-sidebar-collapsed';
 
@@ -57,6 +55,10 @@ export default function App() {
     setOfficeTab(ot);
   };
 
+  const handleDeepLink = (link: OfficeDeepLink) => {
+    openAgentOffice(link.agentId, link.officeTab);
+  };
+
   const openChat = (scope?: AgentId) => {
     setChatAgent(scope);
     setChatOpen(true);
@@ -74,32 +76,26 @@ export default function App() {
         <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[1400px] mx-auto w-full">
           <div className="mb-6 shrink-0">
             <h1 className="text-[24px] font-bold text-gray-900">{getGreeting()}, Akash.</h1>
-            <p className="text-[15px] text-gray-600 mt-1">
-              Krishan&apos;s morning brief is ready.{' '}
-              <span className="font-semibold text-gray-900">3 items need you today.</span>
-            </p>
+            <p className="text-[15px] text-gray-600 mt-1">Krishan&apos;s morning brief is ready.</p>
           </div>
 
-          <div className="flex flex-1 gap-6 min-h-0 items-stretch">
-            <div className="flex-1 flex flex-col min-w-0 min-h-0">
-              <TeamChatPanel page="home" embedded fillHeight scopedAgent={CFO_AGENT_ID} />
+          {/* Tablet / mobile: status strip above chat */}
+          <div className="lg:hidden shrink-0 mb-4">
+            <StatusRail layout="horizontal" onDeepLink={handleDeepLink} />
+          </div>
+
+          <div className="flex flex-1 gap-6 min-h-0 flex-col lg:flex-row">
+            <div className="flex-1 flex flex-col min-w-0 min-h-0 order-2 lg:order-1">
+              <TeamChatPanel
+                page="home"
+                embedded
+                fillHeight
+                onDeepLink={handleDeepLink}
+              />
             </div>
 
-            <aside className="w-[300px] shrink-0 flex flex-col gap-4 overflow-y-auto">
-              {PRIORITY_CARDS.map(card => (
-                <div key={card.id} className="card flex flex-col gap-3">
-                  <h3 className="text-[14px] font-semibold text-gray-900 leading-snug">{card.title}</h3>
-                  <p className="text-[13px] text-gray-500">{card.subline}</p>
-                  <StatusPill status="warning" text={card.status} />
-                  <button
-                    type="button"
-                    onClick={() => openAgentOffice(card.agentId, card.agentTab)}
-                    className="btn-primary w-full mt-1 text-[13px]"
-                  >
-                    {card.cta}
-                  </button>
-                </div>
-              ))}
+            <aside className="hidden lg:block w-[280px] shrink-0 order-1 lg:order-2">
+              <StatusRail layout="vertical" onDeepLink={handleDeepLink} />
             </aside>
           </div>
         </div>
@@ -216,6 +212,7 @@ export default function App() {
             setChatOpen(false);
             setChatAgent(undefined);
           }}
+          onDeepLink={handleDeepLink}
         />
       )}
     </div>

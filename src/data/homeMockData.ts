@@ -1,17 +1,15 @@
-/** Opening morning brief from Krishan on the home chat. Use **heading** for bold section titles. */
-export const HOME_KRISHAN_BRIEF = `Good morning, Akash.
+/** Krishan's opening line on the home chat (one paragraph, CFO voice). */
+export const HOME_KRISHAN_OPENING =
+  'Good morning. Cash position is ₹1.42 cr. Runway is 11.2 weeks. Three items need your attention today.';
 
-Here's your Tuesday brief for Native Glow.
+export const HOME_SUGGESTED_CHIPS = [
+  'Show weekly MER trend',
+  'Unreconciled items > ₹50k',
+  "What's pending with Ankita?",
+  'How much cash this week?',
+];
 
-**Cash & runway**
-Bank balance ₹1.42 cr (HDFC + ICICI). Settlement pipeline ₹52.4 L. Weekly burn ₹22.1 L — runway 11.2 weeks.
-
-**Week in review**
-₹62.4 L net on ₹4.18 cr GMV; margin 14.9%, down 180 bps WoW. Myntra is the main drag on contribution margin.
-
-**Three decisions for you today**
-1. Vendor payments (₹2.42L) — Priya; A1 Packaging on hold.
-2. Ad reallocation (₹3.8L/wk) — Maya; simulator on the card.
-3. GSTR-3B for Apr 2026 — Ankita; CA sign-off due in 3 days.
-
-Use the cards on the right to open each item, or ask me anything below.`;
+export const WHATSAPP_KRISHAN = {
+  label: 'Chat with Krishan on WhatsApp — +91 99876 54321',
+  href: 'https://wa.me/919987654321?text=Hi%20Krishan',
+};

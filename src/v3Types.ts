@@ -1,8 +1,8 @@
 export type Tab = 'home' | 'connections' | 'team';
 export type TeamView = 'roster' | 'agent' | 'policies' | 'counterparts' | 'contacts' | 'activity' | 'escalations';
-export type AgentId = 'veera' | 'priya' | 'rohan' | 'maya' | 'ankita';
+export type AgentId = 'krishan' | 'priya' | 'rohan' | 'maya' | 'ankita';
 
-export type ChatPage = 'home' | `office:${AgentId}`;
+export type ChatPage = 'home' | 'connections' | `office:${AgentId}`;
 
 export type Agent = {
   id: AgentId;
@@ -16,14 +16,23 @@ export type Agent = {
   officeTabs: string[];
 };
 
-export type PriorityCard = {
-  id: string;
+export type ThreadStatusSignal = 'green' | 'amber' | 'red' | 'neutral';
+
+export type ThreadStatus = {
+  id: 'reconciliation' | 'compliance' | 'marketing' | 'vendors';
   title: string;
-  subline: string;
   agentId: AgentId;
-  status: string;
-  cta: string;
-  agentTab?: string;
+  signal: ThreadStatusSignal;
+  statusLine: string;
+  deepLink: { agentId: AgentId; officeTab: string };
+};
+
+export type InlineActionMessage = {
+  id: string;
+  agentId: AgentId;
+  ts: string;
+  body: string;
+  cta: { label: string; deepLink: { agentId: AgentId; officeTab: string } };
 };
 
 export type Threshold = {
@@ -74,13 +83,40 @@ export type Escalation = {
   proposedAction: 'approve' | 'reject' | 'discuss';
 };
 
+export type ArtifactTable = {
+  kind: 'table';
+  columns: string[];
+  rows: (string | number)[][];
+  highlightLastRow?: boolean;
+};
+export type ArtifactBars = {
+  kind: 'bars';
+  unit: string;
+  data: { label: string; value: number; color?: string }[];
+};
+export type ArtifactCompare = {
+  kind: 'compare';
+  rows: { label: string; before: string; after: string; delta: string; positive: boolean }[];
+};
+export type Artifact = ArtifactTable | ArtifactBars | ArtifactCompare;
+
 export type V3CannedResponse = {
   id: string;
-  match: RegExp[];
+  question?: string;
+  match?: RegExp[];
+  keywords?: string[];
   agentId: AgentId;
   headline: string;
-  body: string;
+  body?: string;
+  artifact?: Artifact;
+  sources?: string[];
+  drillLink?: { label: string; deepLink: OfficeDeepLink };
   chips?: string[];
   pages?: ChatPage[];
   kind?: 'data' | 'jargon';
+};
+
+export type OfficeDeepLink = {
+  agentId: AgentId;
+  officeTab: string;
 };

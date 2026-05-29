@@ -1,10 +1,10 @@
 import type { Agent, AgentId } from '../v3Types';
 
-export const CFO_AGENT_ID: AgentId = 'veera';
+export const CFO_AGENT_ID: AgentId = 'krishan';
 
 export const AGENTS: Agent[] = [
   {
-    id: 'veera',
+    id: 'krishan',
     name: 'Krishan',
     role: 'AI CFO',
     email: 'krishan.cw@brandname.com',
@@ -54,7 +54,7 @@ export const AGENTS: Agent[] = [
     todayActionCount: 18,
     recentActions: [
       { ts: 'Yesterday 14:08', verb: 'Auto-paused campaign Summer Prospecting #4', meta: 'CM −₹4,200/day' },
-      { ts: 'Today 10:22', verb: 'Reallocation recommendation ready', meta: '₹3.8L/wk' },
+      { ts: 'Today 09:30', verb: 'Reallocation recommendation ready', meta: '₹3.8L/wk' },
       { ts: 'Yesterday 09:40', verb: 'MER digest sent to Krishan', meta: 'Blended 2.4×' },
     ],
     officeTabs: ['Dashboard', 'Reallocation', 'Attribution', 'Burn list', 'Digest', 'Auto-pause log'],
@@ -69,14 +69,14 @@ export const AGENTS: Agent[] = [
     todayActionCount: 9,
     recentActions: [
       { ts: 'Yesterday 11:15', verb: 'Reconciled 26AS', meta: '₹2.14L TDS match' },
-      { ts: 'Today 08:45', verb: 'GSTR-3B draft ready', meta: 'Apr 2026' },
+      { ts: 'Today 10:00', verb: 'GSTR-3B draft ready', meta: 'Apr 2026' },
       { ts: 'Yesterday 16:30', verb: 'Vendor 2B poke sent', meta: '3 vendors' },
     ],
     officeTabs: ['Calendar', 'GST', 'TDS', 'TCS', 'MSME', 'Notices', 'Repository'],
   },
 ];
 
-export const getAgent = (id: Agent['id']) => AGENTS.find(a => a.id === id)!;
+export const getAgent = (id: AgentId) => AGENTS.find(a => a.id === id)!;
 
 export const getCfo = () => getAgent(CFO_AGENT_ID);
 

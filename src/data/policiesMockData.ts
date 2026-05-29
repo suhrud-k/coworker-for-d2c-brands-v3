@@ -14,9 +14,9 @@ export const DEFAULT_THRESHOLDS: Threshold[] = [
   { agentId: 'maya', key: 'brandDefence', label: 'Brand-defence campaigns protected', unit: 'toggle', value: true },
   { agentId: 'ankita', key: 'autoGstr1', label: 'Auto-file GSTR-1', unit: 'toggle', value: true },
   { agentId: 'ankita', key: 'vendor2bPoke', label: 'Vendor 2B mismatch poke', unit: 'days', value: 7, min: 3, max: 14, step: 1 },
-  { agentId: 'veera', key: 'founderPaymentCeiling', label: 'Akash approval ceiling (any payment)', unit: '₹', value: 500000, min: 100000, max: 2000000, step: 50000 },
-  { agentId: 'veera', key: 'briefTime', label: 'Brief send time', unit: 'time', value: '08:00' },
-  { agentId: 'veera', key: 'briefFormat', label: 'Brief format', unit: 'multi', value: ['concise'] },
+  { agentId: 'krishan', key: 'founderPaymentCeiling', label: 'Akash approval ceiling (any payment)', unit: '₹', value: 500000, min: 100000, max: 2000000, step: 50000 },
+  { agentId: 'krishan', key: 'briefTime', label: 'Brief send time', unit: 'time', value: '08:00' },
+  { agentId: 'krishan', key: 'briefFormat', label: 'Brief format', unit: 'multi', value: ['concise'] },
 ];
 
 export const POLICY_CHANGE_LOG = [

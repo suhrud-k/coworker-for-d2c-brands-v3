@@ -4,7 +4,7 @@ import { ArrowUpRight, AlertCircle } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Card, SectionHeader, StatusPill, DeltaArrow } from './shared/ui';
 
-export function VeeraBriefPanel() {
+export function KrishanBriefPanel() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
       <SectionHeader title="Weekly brief for Akash" subtitle="Week of May 18, 2026">
