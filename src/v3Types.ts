@@ -98,7 +98,42 @@ export type ArtifactCompare = {
   kind: 'compare';
   rows: { label: string; before: string; after: string; delta: string; positive: boolean }[];
 };
-export type Artifact = ArtifactTable | ArtifactBars | ArtifactCompare;
+export type StatementType = 'pnl' | 'balance-sheet' | 'cash-flow';
+
+export type StatementPeriod = {
+  id: string;
+  label: string;
+  type: 'month' | 'quarter' | 'fy' | 'mtd' | 'qtd' | 'as-on';
+  asOnDate?: string;
+};
+
+export type StatementLineItem = {
+  label: string;
+  amount: number;
+  bold?: boolean;
+  isSubtotal?: boolean;
+  indent?: 0 | 1 | 2;
+  noteRef?: string;
+};
+
+export type StatementSection = {
+  title: string;
+  lines: StatementLineItem[];
+};
+
+export type ArtifactStatement = {
+  kind: 'statement';
+  statementType: StatementType;
+  period: StatementPeriod;
+  priorPeriod?: StatementPeriod;
+  sections: StatementSection[];
+  priorAmounts?: Record<string, number>;
+  currency: 'INR';
+  unit: 'absolute' | 'lakhs' | 'crores';
+  asOfLabel?: string;
+};
+
+export type Artifact = ArtifactTable | ArtifactBars | ArtifactCompare | ArtifactStatement;
 
 export type V3CannedResponse = {
   id: string;
@@ -112,6 +147,7 @@ export type V3CannedResponse = {
   sources?: string[];
   drillLink?: { label: string; deepLink: OfficeDeepLink };
   chips?: string[];
+  replyChips?: string[];
   pages?: ChatPage[];
   kind?: 'data' | 'jargon';
 };

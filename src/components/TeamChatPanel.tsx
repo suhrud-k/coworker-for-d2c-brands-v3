@@ -143,12 +143,14 @@ export function TeamChatPanel({
   const renderAssistantBubble = (msg: ChatMessage) => {
     const r = msg.response;
     const isJargon = r?.kind === 'jargon';
+    const isStatement = r?.artifact?.kind === 'statement';
     return (
       <div className="flex gap-3">
         {msg.agentId && <AgentAvatar id={msg.agentId} size={isHome ? 'lg' : 'sm'} />}
         <div
           className={cn(
-            'relative max-w-[95%] rounded-xl px-4 py-3 text-sm leading-relaxed',
+            'relative rounded-xl px-4 py-3 text-sm leading-relaxed',
+            isStatement ? 'max-w-3xl w-full' : 'max-w-[95%]',
             'bg-white border border-gray-200 text-gray-700 rounded-bl-[4px]'
           )}
         >
@@ -171,6 +173,20 @@ export function TeamChatPanel({
               {!isJargon && r.artifact && (
                 <div className="mt-3">
                   <ChatArtifact artifact={r.artifact} />
+                </div>
+              )}
+              {r.replyChips && r.replyChips.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {r.replyChips.map(chip => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => respond(chip)}
+                      className="px-3 py-1.5 rounded-full border border-purple-200 bg-white text-purple-700 text-xs hover:bg-purple-50 transition cursor-pointer"
+                    >
+                      {chip}
+                    </button>
+                  ))}
                 </div>
               )}
               {r.sources && r.sources.length > 0 && (

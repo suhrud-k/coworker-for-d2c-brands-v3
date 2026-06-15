@@ -1,5 +1,8 @@
 import { V3_CANNED } from '../data/cannedResponses';
 import type { V3CannedResponse, AgentId } from '../v3Types';
+import { parseStatementQuery } from './parseStatementPeriod';
+import { getStatementResponse } from '../data/statementsMockData';
+import { clarifyType, clarifyPeriod } from '../data/statementsClarifications';
 
 const JARGON_PREFIX = /^(what is|what's|whats|explain|define|meaning of|what does)\b/i;
 
@@ -31,6 +34,18 @@ function entryMatches(r: V3CannedResponse, n: string, original: string): boolean
 export function matchV3Question(input: string, currentMention?: AgentId): V3CannedResponse | null {
   const trimmed = input.trim();
   const n = normalize(trimmed);
+
+  const stmt = parseStatementQuery(trimmed);
+  if (stmt) {
+    switch (stmt.kind) {
+      case 'resolved':
+        return getStatementResponse(stmt.type, stmt.period);
+      case 'needs-type':
+        return clarifyType(stmt.period);
+      case 'needs-period':
+        return clarifyPeriod(stmt.type);
+    }
+  }
 
   // Pass 1 — exact match on canonical question
   const exact = V3_CANNED.find(r => r.question && normalize(r.question) === n);

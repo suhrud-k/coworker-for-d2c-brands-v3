@@ -1,5 +1,6 @@
 import { cn } from '../lib/utils';
 import type { Artifact } from '../v3Types';
+import { ArtifactStatementCard } from './ArtifactStatement';
 
 function ArtifactTable({ artifact }: { artifact: Extract<Artifact, { kind: 'table' }> }) {
   return (
@@ -97,5 +98,6 @@ function ArtifactCompare({ artifact }: { artifact: Extract<Artifact, { kind: 'co
 export function ChatArtifact({ artifact }: { artifact: Artifact }) {
   if (artifact.kind === 'table') return <ArtifactTable artifact={artifact} />;
   if (artifact.kind === 'bars') return <ArtifactBars artifact={artifact} />;
+  if (artifact.kind === 'statement') return <ArtifactStatementCard artifact={artifact} />;
   return <ArtifactCompare artifact={artifact} />;
 }

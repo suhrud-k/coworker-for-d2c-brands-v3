@@ -31,6 +31,8 @@ import {
   isFinancialReport,
   StatementNode,
 } from '../data/reportsMockData';
+import { ArtifactStatementCard } from './ArtifactStatement';
+import { getSavedReports, removeReport, type SavedReport } from '../state/savedReportsStore';
 
 const StatusPill = ({
   status,
@@ -215,6 +217,8 @@ export interface ReportsScreenProps {
 }
 
 export const ReportsScreen = ({ onNavigateCompliance }: ReportsScreenProps) => {
+  const [savedReports, setSavedReports] = useState<SavedReport[]>([]);
+  const [openSavedReportId, setOpenSavedReportId] = useState<string | null>(null);
   const [category, setCategory] = useState<ReportCategory>('all');
   const [dateRange, setDateRange] = useState<ReportDateRange>('Last Financial Year');
   const [entity, setEntity] = useState<ReportEntity>('All entities');
@@ -279,6 +283,10 @@ export const ReportsScreen = ({ onNavigateCompliance }: ReportsScreenProps) => {
   }, [periodLocked]);
 
   useEffect(() => {
+    setSavedReports(getSavedReports());
+  }, []);
+
+  useEffect(() => {
     if (!exportToast) return;
     const t = setTimeout(() => setExportToast(null), 4000);
     return () => clearTimeout(t);
@@ -333,6 +341,64 @@ export const ReportsScreen = ({ onNavigateCompliance }: ReportsScreenProps) => {
       </AnimatePresence>
 
       {/* Global filters */}
+      <Card>
+        <div className="space-y-3">
+          <div>
+            <h3 className="text-[15px] font-semibold text-navy-950">Saved from chat</h3>
+            <p className="text-[12px] text-gray-500">Reports you save from chat will appear here.</p>
+          </div>
+          {savedReports.length === 0 ? (
+            <p className="text-[13px] text-gray-500">Try asking “Generate P&L for last quarter”.</p>
+          ) : (
+            <div className="space-y-2">
+              {savedReports.map(report => (
+                <div key={report.id} className="border border-gray-200 rounded-[8px] p-3 flex items-center justify-between gap-2">
+                  <div>
+                    <div className="text-[13px] font-semibold text-gray-900">
+                      {report.type === 'pnl' ? 'P&L' : report.type === 'balance-sheet' ? 'Balance Sheet' : 'Cash Flow Statement'}
+                    </div>
+                    <div className="text-[12px] text-gray-500">
+                      {report.periodLabel} · saved {new Date(report.savedAt).toLocaleString('en-IN')}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button type="button" className="btn-secondary h-8 px-3 text-[12px]" onClick={() => setOpenSavedReportId(report.id)}>
+                      Open
+                    </button>
+                    <button
+                      type="button"
+                      className="text-[12px] text-error"
+                      onClick={() => {
+                        removeReport(report.id);
+                        const next = getSavedReports();
+                        setSavedReports(next);
+                        if (openSavedReportId === report.id) setOpenSavedReportId(null);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </Card>
+
+      {openSavedReportId && (
+        <Card>
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="text-[14px] font-semibold text-navy-950">Saved report preview</h4>
+            <button type="button" className="text-[12px] text-gray-500" onClick={() => setOpenSavedReportId(null)}>
+              Close
+            </button>
+          </div>
+          {savedReports.find(r => r.id === openSavedReportId)?.statement && (
+            <ArtifactStatementCard artifact={savedReports.find(r => r.id === openSavedReportId)!.statement} />
+          )}
+        </Card>
+      )}
+
       <Card>
         <div className="flex flex-wrap items-center gap-4 justify-between">
           <div className="flex flex-wrap gap-1 p-1 bg-gray-100 rounded-[8px]">
