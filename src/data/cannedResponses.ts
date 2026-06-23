@@ -5,6 +5,7 @@ const PRIYA: ChatPage[] = ['home', 'office:priya'];
 const ROHAN: ChatPage[] = ['home', 'office:rohan'];
 const MAYA: ChatPage[] = ['home', 'office:maya'];
 const ANKITA: ChatPage[] = ['home', 'office:ankita'];
+const TARA: ChatPage[] = ['home', 'office:tara'];
 
 const ALL_PAGES: ChatPage[] = [
   'home',
@@ -14,6 +15,7 @@ const ALL_PAGES: ChatPage[] = [
   'office:rohan',
   'office:maya',
   'office:ankita',
+  'office:tara',
 ];
 
 /**
@@ -801,6 +803,79 @@ const V3_STUBS: V3CannedResponse[] = [
     body: 'Marketplace credited on 17 May. Matches our filed amount. Two other claims over 30 days remain open (₹3.84 L).',
     chips: ['Show claims aging', 'Returns recovery summary'],
     pages: ['office:rohan'],
+  },
+  {
+    id: 'q_inv_stockout',
+    question: 'Which products will stock out this week?',
+    pages: TARA,
+    match: [/stock\s?out/i, /run(?:ning)? out/i, /low (?:on )?stock/i],
+    agentId: 'tara',
+    headline: '5 hero SKUs drop below a week of cover. I\'ve drafted reorder POs for the top 2.',
+    body: 'At the current AI forecast, these stocked SKUs hit zero before the next reorder lands. POs CF-PO-3387 and CF-PO-3388 are awaiting your approval.',
+    artifact: {
+      kind: 'table',
+      columns: ['Product', 'On hand', 'Forecast/wk', 'Cover', 'Action'],
+      rows: [
+        ['CT Flawless Filter', '14', '19', '5 days', 'PO drafted'],
+        ['Supergoop! Unseen SPF40', '9', '16', '4 days', 'PO drafted'],
+        ['CT Pillow Talk Lipstick', '18', '22', '6 days', 'PO drafted'],
+        ['Olaplex No.3 100ml', '54', '30', '13 days', 'At reorder pt'],
+      ],
+    },
+    sources: ['Luxe by Kan Storefront', 'Brand stockist feeds', 'Cashfree PG'],
+    drillLink: { label: 'Open Replenishment →', deepLink: { agentId: 'tara', officeTab: 'Replenishment' } },
+  },
+  {
+    id: 'q_inv_ondemand',
+    question: 'Show on-demand orders awaiting the brand stockist',
+    pages: TARA,
+    match: [/on[-\s]?demand/i, /awaiting/i, /stockist/i, /supplier order/i, /backorder/i],
+    agentId: 'tara',
+    headline: '11 customer orders are with brand stockists. 1 has breached SLA and 3 are at risk.',
+    body: 'For non-stocked SKUs I raise the PO the moment the customer order lands, then watch the SLA clock. D&G The One has breached — I\'ve escalated to the stockist.',
+    artifact: {
+      kind: 'table',
+      columns: ['Product', 'Supplier', 'Orders', 'Lead time', 'SLA'],
+      rows: [
+        ['Chanel N°5 EDP', 'Chanel India', '3', '9 days', 'At risk'],
+        ['D&G The One EDP', 'D&G Beauty India', '1', '8 days', 'Breached'],
+        ['Chantecaille Foundation', 'Chantecaille UK', '2', '14 days', 'At risk'],
+        ['Caudalie Premier Cru', 'Caudalie Distribution', '2', '7 days', 'On track'],
+      ],
+    },
+    sources: ['Brand stockist feeds', 'Luxe by Kan Storefront'],
+    drillLink: { label: 'Open On-demand →', deepLink: { agentId: 'tara', officeTab: 'On-demand' } },
+  },
+  {
+    id: 'q_inv_capital',
+    question: 'How much cash is tied up in inventory?',
+    pages: TARA,
+    match: [/tied up/i, /working capital/i, /inventory value/i, /cash.*inventory/i],
+    agentId: 'tara',
+    headline: '₹48.6 L sits in stocked inventory — only on the 64 SKUs that earn it.',
+    body: 'The other ~1,240 SKUs hold zero capital because they\'re on-demand. Of the held value, ₹3.2 L is in slow movers (>120 days) and 2 batches (₹64K) expire within 90 days — candidates for a markdown with Maya.',
+    artifact: {
+      kind: 'table',
+      columns: ['Bucket', 'Value', 'Note'],
+      rows: [
+        ['Healthy cover', '₹42.2 L', 'Selling within forecast'],
+        ['Slow movers >120d', '₹3.2 L', 'Tarte Shape Tape overstocked'],
+        ['Expiring <90 days', '₹64 K', 'K18 batches — bundle/markdown'],
+        ['Stockout risk', '₹1.0 L', 'Replenishment drafted'],
+      ],
+    },
+    sources: ['Luxe by Kan Storefront', 'Cashfree PG', 'Tally Prime'],
+    drillLink: { label: 'Open Overview →', deepLink: { agentId: 'tara', officeTab: 'Overview' } },
+  },
+  {
+    id: 'q_inv_graduate',
+    question: 'Should we start stocking any on-demand products?',
+    pages: TARA,
+    match: [/should we (?:start )?stock/i, /graduat/i, /start stocking/i, /hold inventory/i],
+    agentId: 'tara',
+    headline: 'Yes — Olaplex No.7 Bonding Oil has earned a spot on the shelf.',
+    body: 'It\'s sold ~14/wk on-demand for 6 straight weeks. Stocking ~60 units (₹0.9L) cuts delivery from ~8 days to same-day and lifts margin ~6 pts by removing the per-order stockist markup. I can draft the first stocking PO.',
+    drillLink: { label: 'Open On-demand →', deepLink: { agentId: 'tara', officeTab: 'On-demand' } },
   },
 ];
 

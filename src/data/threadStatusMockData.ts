@@ -3,7 +3,7 @@ import type { ThreadStatus } from '../v3Types';
 export const THREAD_STATUS: ThreadStatus[] = [
   {
     id: 'reconciliation',
-    title: 'Reconciliation',
+    title: 'Recon',
     agentId: 'rohan',
     signal: 'amber',
     statusLine: 'Up to yesterday — 4 unreconciled entries',
@@ -27,10 +27,18 @@ export const THREAD_STATUS: ThreadStatus[] = [
   },
   {
     id: 'vendors',
-    title: 'Vendors',
+    title: 'Vendor',
     agentId: 'priya',
     signal: 'amber',
     statusLine: '1 payment needs your approval',
     deepLink: { agentId: 'priya', officeTab: 'Payment Runs' },
+  },
+  {
+    id: 'inventory',
+    title: 'Inventory',
+    agentId: 'tara',
+    signal: 'amber',
+    statusLine: '5 hero SKUs at stockout risk · 2 POs need approval',
+    deepLink: { agentId: 'tara', officeTab: 'Overview' },
   },
 ];

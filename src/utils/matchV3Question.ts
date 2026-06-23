@@ -11,7 +11,7 @@ function normalize(input: string): string {
 }
 
 export function parseMention(input: string): { text: string; agent?: AgentId } {
-  const m = input.match(/^@(krishan|priya|rohan|maya|ankita)\b\s*/i);
+  const m = input.match(/^@(krishan|priya|rohan|maya|ankita|tara)\b\s*/i);
   if (!m) return { text: input };
   return { text: input.slice(m[0].length), agent: m[1].toLowerCase() as AgentId };
 }

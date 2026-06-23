@@ -111,15 +111,15 @@ export function TeamRoster({ onEnterOffice }: { onEnterOffice: (id: AgentId) => 
       <div className="w-px h-16 bg-gray-200 shrink-0" aria-hidden />
 
       <div className="w-full">
-        {/* Horizontal bar across the four report columns (desktop) */}
+        {/* Horizontal bar across the five report columns (desktop) */}
         <div className="hidden lg:block relative w-full h-px mb-0">
           <div
-            className="absolute top-0 left-[12.5%] right-[12.5%] h-px bg-gray-200"
+            className="absolute top-0 left-[10%] right-[10%] h-px bg-gray-200"
             aria-hidden
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full items-stretch mt-0 lg:-mt-px">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 w-full items-stretch mt-0 lg:-mt-px">
           {reports.map(a => (
             <div key={a.id} className="flex flex-col items-center w-full min-h-[260px]">
               {/* Vertical drop from horizontal bar into each card */}

@@ -17,7 +17,7 @@ export const AGENTS: Agent[] = [
   {
     id: 'priya',
     name: 'Priya',
-    role: 'Vendor Management',
+    role: 'Vendor',
     email: 'priya.cw@brandname.com',
     avatarBg: 'bg-emerald-500',
     status: 'active',
@@ -32,7 +32,7 @@ export const AGENTS: Agent[] = [
   {
     id: 'rohan',
     name: 'Rohan',
-    role: 'Reconciliation',
+    role: 'Recon',
     email: 'rohan.cw@brandname.com',
     avatarBg: 'bg-blue-600',
     status: 'active',
@@ -47,7 +47,7 @@ export const AGENTS: Agent[] = [
   {
     id: 'maya',
     name: 'Maya',
-    role: 'Marketing Efficiency',
+    role: 'Marketing',
     email: 'maya.cw@brandname.com',
     avatarBg: 'bg-amber-500',
     status: 'active',
@@ -65,7 +65,7 @@ export const AGENTS: Agent[] = [
     role: 'Compliance',
     email: 'ankita.cw@brandname.com',
     avatarBg: 'bg-rose-600',
-    status: 'awaiting',
+    status: 'active',
     todayActionCount: 9,
     recentActions: [
       { ts: 'Yesterday 11:15', verb: 'Reconciled 26AS', meta: '₹2.14L TDS match' },
@@ -73,6 +73,21 @@ export const AGENTS: Agent[] = [
       { ts: 'Yesterday 16:30', verb: 'Vendor 2B poke sent', meta: '3 vendors' },
     ],
     officeTabs: ['Calendar', 'GST', 'TDS', 'TCS', 'MSME', 'Notices', 'Repository'],
+  },
+  {
+    id: 'tara',
+    name: 'Tara',
+    role: 'Inventory',
+    email: 'tara.cw@brandname.com',
+    avatarBg: 'bg-teal-500',
+    status: 'active',
+    todayActionCount: 27,
+    recentActions: [
+      { ts: 'Today 08:40', verb: 'Drafted reorder PO CF-PO-3387', meta: '₹2.1L · awaiting approval' },
+      { ts: 'Today 07:30', verb: 'Auto-raised on-demand PO to Chanel India', meta: '3 orders · ₹32K' },
+      { ts: 'Yesterday 18:05', verb: 'Flagged D&G stockist SLA breach', meta: 'Day 11 of 8' },
+    ],
+    officeTabs: ['Overview', 'Stocked SKUs', 'On-demand', 'Replenishment', 'Suppliers', 'Expiry & Batch'],
   },
 ];
 

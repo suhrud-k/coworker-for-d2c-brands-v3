@@ -1,6 +1,6 @@
 export type Tab = 'home' | 'connections' | 'team';
 export type TeamView = 'roster' | 'agent' | 'policies' | 'counterparts' | 'contacts' | 'activity' | 'escalations';
-export type AgentId = 'krishan' | 'priya' | 'rohan' | 'maya' | 'ankita';
+export type AgentId = 'krishan' | 'priya' | 'rohan' | 'maya' | 'ankita' | 'tara';
 
 export type ChatPage = 'home' | 'connections' | `office:${AgentId}`;
 
@@ -19,7 +19,7 @@ export type Agent = {
 export type ThreadStatusSignal = 'green' | 'amber' | 'red' | 'neutral';
 
 export type ThreadStatus = {
-  id: 'reconciliation' | 'compliance' | 'marketing' | 'vendors';
+  id: 'reconciliation' | 'compliance' | 'marketing' | 'vendors' | 'inventory';
   title: string;
   agentId: AgentId;
   signal: ThreadStatusSignal;

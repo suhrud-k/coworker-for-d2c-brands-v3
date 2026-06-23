@@ -10,10 +10,16 @@ import type {
 export const STATEMENT_PERIODS: Record<string, StatementPeriod> = {
   'apr-2026': { id: 'apr-2026', label: 'Apr 2026', type: 'month' },
   'may-2026': { id: 'may-2026', label: 'May 2026 (MTD)', type: 'mtd', asOnDate: '2026-04-30' },
+  'mar-2025': { id: 'mar-2025', label: 'Mar 2025', type: 'month' },
+  'apr-2025': { id: 'apr-2025', label: 'Apr 2025', type: 'month' },
+  'may-2025': { id: 'may-2025', label: 'May 2025', type: 'month' },
   'fy25-26-q1': { id: 'fy25-26-q1', label: 'Q1 FY25-26 (Apr–Jun 2026)', type: 'quarter' },
   'fy24-25-q4': { id: 'fy24-25-q4', label: 'Q4 FY24-25 (Jan–Mar 2026)', type: 'quarter', asOnDate: '2026-03-31' },
+  'fy24-25-q3': { id: 'fy24-25-q3', label: 'Q3 FY24-25 (Oct–Dec 2025)', type: 'quarter' },
   'fy24-25': { id: 'fy24-25', label: 'FY 2024-25', type: 'fy', asOnDate: '2025-03-31' },
+  'fy23-24': { id: 'fy23-24', label: 'FY 2023-24', type: 'fy', asOnDate: '2024-03-31' },
   'fy25-26-ytd': { id: 'fy25-26-ytd', label: 'FY 2025-26 (YTD May)', type: 'fy', asOnDate: '2026-05-31' },
+  'fy24-25-ytd': { id: 'fy24-25-ytd', label: 'FY 2024-25 (YTD May)', type: 'fy', asOnDate: '2025-05-31' },
   'as-on-2026-04-30': { id: 'as-on-2026-04-30', label: 'As at 30 April 2026', type: 'as-on', asOnDate: '2026-04-30' },
   'as-on-2026-03-31': { id: 'as-on-2026-03-31', label: 'As at 31 March 2026', type: 'as-on', asOnDate: '2026-03-31' },
   'as-on-2025-03-31': { id: 'as-on-2025-03-31', label: 'As at 31 March 2025', type: 'as-on', asOnDate: '2025-03-31' },
@@ -247,37 +253,106 @@ const PNL_INPUTS: Record<string, BasePnL> = {
   },
 };
 
-const PNL_PRIOR: Record<string, string> = {
-  'apr-2026': 'apr-2025-proxy',
-  'may-2026': 'may-2025-proxy',
-  'fy25-26-q1': 'fy24-25-q4',
-  'fy24-25-q4': 'fy24-25-q3-proxy',
-  'fy24-25': 'fy23-24-proxy',
-  'fy25-26-ytd': 'fy24-25-ytd-proxy',
-};
-
 const PNL_SECTIONS: Record<string, StatementSection[]> = Object.fromEntries(
   Object.entries(PNL_INPUTS).map(([id, input]) => [id, pnlSections(input)])
 );
 
-const PNL_PRIOR_AMOUNTS: Record<string, Record<string, number>> = {
-  'apr-2026': scalePrior(PNL_SECTIONS['apr-2026'], 0.88),
-  'may-2026': scalePrior(PNL_SECTIONS['may-2026'], 0.9),
-  'fy25-26-q1': priorAmountsFromSections(PNL_SECTIONS['fy24-25-q4']),
-  'fy24-25-q4': scalePrior(PNL_SECTIONS['fy24-25-q4'], 0.92),
-  'fy24-25': scalePrior(PNL_SECTIONS['fy24-25'], 0.84),
-  'fy25-26-ytd': scalePrior(PNL_SECTIONS['fy25-26-ytd'], 0.9),
-};
+/** Channel-mix and cost-line heuristics for Native-Glow-scale YoY variance. */
+function buildPriorPnL(d: BasePnL): BasePnL {
+  return {
+    salesAmazon: Math.round(d.salesAmazon / 1.08),
+    salesFlipkart: Math.round(d.salesFlipkart / 1.05),
+    salesMyntra: Math.round(d.salesMyntra / 0.82),
+    salesMeesho: Math.round(d.salesMeesho / 1.29),
+    salesShopify: Math.round(d.salesShopify / 1.1),
+    otherIncome: Math.round(d.otherIncome / 1.05),
+    openingInventory: Math.round(d.openingInventory / 1.04),
+    purchases: Math.round(d.purchases / 1.06),
+    inventoryChange: Math.round(d.inventoryChange / 1.06),
+    marketing: Math.round(d.marketing / 1.12),
+    commissions: Math.round(d.commissions / 1.04),
+    logistics: Math.round(d.logistics / 1.09),
+    paymentGateway: Math.round(d.paymentGateway / 1.07),
+    employee: Math.round(d.employee / 1.03),
+    rent: d.rent,
+    technology: Math.round(d.technology / 1.05),
+    otherOpex: Math.round(d.otherOpex / 1.04),
+    depreciation: Math.round(d.depreciation / 1.02),
+    financeCosts: Math.round(d.financeCosts / 1.03),
+    taxExpense: Math.round(d.taxExpense / 1.05),
+  };
+}
 
-function scalePrior(sections: StatementSection[], ratio: number): Record<string, number> {
+function buildPriorPnLYoY(d: BasePnL): BasePnL {
+  return {
+    salesAmazon: Math.round(d.salesAmazon / 1.1),
+    salesFlipkart: Math.round(d.salesFlipkart / 1.07),
+    salesMyntra: Math.round(d.salesMyntra / 0.85),
+    salesMeesho: Math.round(d.salesMeesho / 1.35),
+    salesShopify: Math.round(d.salesShopify / 1.12),
+    otherIncome: Math.round(d.otherIncome / 1.08),
+    openingInventory: Math.round(d.openingInventory / 1.05),
+    purchases: Math.round(d.purchases / 1.07),
+    inventoryChange: Math.round(d.inventoryChange / 1.07),
+    marketing: Math.round(d.marketing / 1.14),
+    commissions: Math.round(d.commissions / 1.05),
+    logistics: Math.round(d.logistics / 1.1),
+    paymentGateway: Math.round(d.paymentGateway / 1.08),
+    employee: Math.round(d.employee / 1.04),
+    rent: Math.round(d.rent / 1.02),
+    technology: Math.round(d.technology / 1.06),
+    otherOpex: Math.round(d.otherOpex / 1.05),
+    depreciation: Math.round(d.depreciation / 1.03),
+    financeCosts: Math.round(d.financeCosts / 1.04),
+    taxExpense: Math.round(d.taxExpense / 1.06),
+  };
+}
+
+function buildPriorPnLFy(d: BasePnL): BasePnL {
+  return {
+    salesAmazon: Math.round(d.salesAmazon / 1.12),
+    salesFlipkart: Math.round(d.salesFlipkart / 1.09),
+    salesMyntra: Math.round(d.salesMyntra / 0.88),
+    salesMeesho: Math.round(d.salesMeesho / 1.4),
+    salesShopify: Math.round(d.salesShopify / 1.15),
+    otherIncome: Math.round(d.otherIncome / 1.1),
+    openingInventory: Math.round(d.openingInventory / 1.06),
+    purchases: Math.round(d.purchases / 1.08),
+    inventoryChange: Math.round(d.inventoryChange / 1.08),
+    marketing: Math.round(d.marketing / 1.16),
+    commissions: Math.round(d.commissions / 1.06),
+    logistics: Math.round(d.logistics / 1.11),
+    paymentGateway: Math.round(d.paymentGateway / 1.09),
+    employee: Math.round(d.employee / 1.05),
+    rent: Math.round(d.rent / 1.03),
+    technology: Math.round(d.technology / 1.07),
+    otherOpex: Math.round(d.otherOpex / 1.06),
+    depreciation: Math.round(d.depreciation / 1.04),
+    financeCosts: Math.round(d.financeCosts / 1.05),
+    taxExpense: Math.round(d.taxExpense / 1.07),
+  };
+}
+
+function scaleLineItems(sections: StatementSection[], factors: Record<string, number>): Record<string, number> {
   const out: Record<string, number> = {};
   sections.forEach(section =>
     section.lines.forEach(line => {
-      out[line.label] = Math.round(line.amount * ratio);
+      const factor = factors[line.label] ?? 1.06;
+      out[line.label] = Math.round(line.amount / factor);
     })
   );
   return out;
 }
+
+// Variances tuned to surface the Myntra-margin narrative.
+const PNL_PRIOR_AMOUNTS: Record<string, Record<string, number>> = {
+  'apr-2026': priorAmountsFromSections(pnlSections(buildPriorPnLYoY(PNL_INPUTS['apr-2026']))),
+  'may-2026': priorAmountsFromSections(pnlSections(buildPriorPnL(PNL_INPUTS['may-2026']))),
+  'fy25-26-q1': priorAmountsFromSections(PNL_SECTIONS['fy24-25-q4']),
+  'fy24-25-q4': priorAmountsFromSections(pnlSections(buildPriorPnL(PNL_INPUTS['fy24-25-q4']))),
+  'fy24-25': priorAmountsFromSections(pnlSections(buildPriorPnLFy(PNL_INPUTS['fy24-25']))),
+  'fy25-26-ytd': priorAmountsFromSections(pnlSections(buildPriorPnL(PNL_INPUTS['fy25-26-ytd']))),
+};
 
 function cfsSections(periodId: string, openingCash: number, closingCash: number): StatementSection[] {
   const pnl = PNL_SECTIONS[periodId];
@@ -369,6 +444,38 @@ function cfsSections(periodId: string, openingCash: number, closingCash: number)
   ];
 }
 
+function cfsPriorAmounts(periodId: string, openingCash: number, closingCash: number): Record<string, number> {
+  const current = cfsSections(periodId, openingCash, closingCash);
+  // Variances tuned to surface the Myntra-margin narrative.
+  const factors: Record<string, number> = {
+    'Profit before tax': 1.06,
+    'Depreciation and amortization': 1.02,
+    'Finance costs': 1.03,
+    'Interest income': 1.05,
+    'Operating profit before working capital changes': 1.06,
+    '(Increase) / decrease in inventories': 1.08,
+    '(Increase) / decrease in trade receivables': 1.1,
+    '(Increase) / decrease in short-term loans and advances': 1.05,
+    'Increase / (decrease) in trade payables': 1.07,
+    'Increase / (decrease) in other current liabilities': 1.04,
+    'Cash generated from operations': 1.06,
+    'Income tax paid': 1.05,
+    'Net cash from / (used in) operating activities (A)': 1.06,
+    'Purchase of PPE': 1.12,
+    'Purchase of intangible assets': 1.1,
+    'Net cash from / (used in) investing activities (B)': 1.08,
+    'Proceeds from long-term borrowings': 1.15,
+    'Repayment of long-term borrowings': 1.04,
+    'Proceeds from / (repayment of) short-term borrowings': 1.06,
+    'Finance costs paid': 1.03,
+    'Net cash from / (used in) financing activities (C)': 1.05,
+    'Net increase / (decrease) in cash and equivalents (A + B + C)': 1.06,
+    'Cash and equivalents at beginning of period': 1.04,
+    'Cash and equivalents at end of period': 1.05,
+  };
+  return scaleLineItems(current, factors);
+}
+
 function findLineAmount(sections: StatementSection[], label: string): number {
   for (const section of sections) {
     const row = section.lines.find(line => line.label === label);
@@ -451,7 +558,7 @@ function bsSections(cash: number, retainedEarnings: number, stBorrowings: number
 
 const STATEMENTS: Record<StatementType, Record<string, ArtifactStatement>> = {
   pnl: {
-    'apr-2026': statement('pnl', 'apr-2026', 'mar-2025', PNL_SECTIONS['apr-2026'], PNL_PRIOR_AMOUNTS['apr-2026']),
+    'apr-2026': statement('pnl', 'apr-2026', 'apr-2025', PNL_SECTIONS['apr-2026'], PNL_PRIOR_AMOUNTS['apr-2026']),
     'may-2026': statement('pnl', 'may-2026', 'apr-2025', PNL_SECTIONS['may-2026'], PNL_PRIOR_AMOUNTS['may-2026']),
     'fy25-26-q1': statement('pnl', 'fy25-26-q1', 'fy24-25-q4', PNL_SECTIONS['fy25-26-q1'], PNL_PRIOR_AMOUNTS['fy25-26-q1']),
     'fy24-25-q4': statement('pnl', 'fy24-25-q4', 'fy24-25-q3', PNL_SECTIONS['fy24-25-q4'], PNL_PRIOR_AMOUNTS['fy24-25-q4']),
@@ -459,17 +566,67 @@ const STATEMENTS: Record<StatementType, Record<string, ArtifactStatement>> = {
     'fy25-26-ytd': statement('pnl', 'fy25-26-ytd', 'fy24-25-ytd', PNL_SECTIONS['fy25-26-ytd'], PNL_PRIOR_AMOUNTS['fy25-26-ytd']),
   },
   'cash-flow': {
-    'apr-2026': statement('cash-flow', 'apr-2026', 'apr-2025', cfsSections('apr-2026', BS_CASH_BY_PERIOD['as-on-2026-03-31'], BS_CASH_BY_PERIOD['as-on-2026-04-30']), scalePrior(cfsSections('apr-2026', BS_CASH_BY_PERIOD['as-on-2026-03-31'], BS_CASH_BY_PERIOD['as-on-2026-04-30']), 0.9)),
-    'may-2026': statement('cash-flow', 'may-2026', 'may-2025', cfsSections('may-2026', BS_CASH_BY_PERIOD['as-on-2026-04-30'], 13_780_000), scalePrior(cfsSections('may-2026', BS_CASH_BY_PERIOD['as-on-2026-04-30'], 13_780_000), 0.9)),
-    'fy25-26-q1': statement('cash-flow', 'fy25-26-q1', 'fy24-25-q4', cfsSections('fy25-26-q1', BS_CASH_BY_PERIOD['as-on-2026-03-31'], 14_950_000), priorAmountsFromSections(cfsSections('fy24-25-q4', BS_CASH_BY_PERIOD['as-on-2025-03-31'], BS_CASH_BY_PERIOD['as-on-2026-03-31']))),
-    'fy24-25-q4': statement('cash-flow', 'fy24-25-q4', 'fy24-25-q3', cfsSections('fy24-25-q4', BS_CASH_BY_PERIOD['as-on-2025-03-31'], BS_CASH_BY_PERIOD['as-on-2026-03-31']), scalePrior(cfsSections('fy24-25-q4', BS_CASH_BY_PERIOD['as-on-2025-03-31'], BS_CASH_BY_PERIOD['as-on-2026-03-31']), 0.9)),
-    'fy24-25': statement('cash-flow', 'fy24-25', 'fy23-24', cfsSections('fy24-25', 8_100_000, BS_CASH_BY_PERIOD['as-on-2025-03-31']), scalePrior(cfsSections('fy24-25', 8_100_000, BS_CASH_BY_PERIOD['as-on-2025-03-31']), 0.88)),
-    'fy25-26-ytd': statement('cash-flow', 'fy25-26-ytd', 'fy24-25-ytd', cfsSections('fy25-26-ytd', BS_CASH_BY_PERIOD['as-on-2026-03-31'], 13_780_000), scalePrior(cfsSections('fy25-26-ytd', BS_CASH_BY_PERIOD['as-on-2026-03-31'], 13_780_000), 0.91)),
+    'apr-2026': statement(
+      'cash-flow',
+      'apr-2026',
+      'apr-2025',
+      cfsSections('apr-2026', BS_CASH_BY_PERIOD['as-on-2026-03-31'], BS_CASH_BY_PERIOD['as-on-2026-04-30']),
+      cfsPriorAmounts('apr-2026', BS_CASH_BY_PERIOD['as-on-2026-03-31'], BS_CASH_BY_PERIOD['as-on-2026-04-30'])
+    ),
+    'may-2026': statement(
+      'cash-flow',
+      'may-2026',
+      'may-2025',
+      cfsSections('may-2026', BS_CASH_BY_PERIOD['as-on-2026-04-30'], 13_780_000),
+      cfsPriorAmounts('may-2026', BS_CASH_BY_PERIOD['as-on-2026-04-30'], 13_780_000)
+    ),
+    'fy25-26-q1': statement(
+      'cash-flow',
+      'fy25-26-q1',
+      'fy24-25-q4',
+      cfsSections('fy25-26-q1', BS_CASH_BY_PERIOD['as-on-2026-03-31'], 14_950_000),
+      priorAmountsFromSections(cfsSections('fy24-25-q4', BS_CASH_BY_PERIOD['as-on-2025-03-31'], BS_CASH_BY_PERIOD['as-on-2026-03-31']))
+    ),
+    'fy24-25-q4': statement(
+      'cash-flow',
+      'fy24-25-q4',
+      'fy24-25-q3',
+      cfsSections('fy24-25-q4', BS_CASH_BY_PERIOD['as-on-2025-03-31'], BS_CASH_BY_PERIOD['as-on-2026-03-31']),
+      cfsPriorAmounts('fy24-25-q4', BS_CASH_BY_PERIOD['as-on-2025-03-31'], BS_CASH_BY_PERIOD['as-on-2026-03-31'])
+    ),
+    'fy24-25': statement(
+      'cash-flow',
+      'fy24-25',
+      'fy23-24',
+      cfsSections('fy24-25', 8_100_000, BS_CASH_BY_PERIOD['as-on-2025-03-31']),
+      cfsPriorAmounts('fy24-25', 8_100_000, BS_CASH_BY_PERIOD['as-on-2025-03-31'])
+    ),
+    'fy25-26-ytd': statement(
+      'cash-flow',
+      'fy25-26-ytd',
+      'fy24-25-ytd',
+      cfsSections('fy25-26-ytd', BS_CASH_BY_PERIOD['as-on-2026-03-31'], 13_780_000),
+      cfsPriorAmounts('fy25-26-ytd', BS_CASH_BY_PERIOD['as-on-2026-03-31'], 13_780_000)
+    ),
   },
   'balance-sheet': {
     'may-2026': statement('balance-sheet', 'may-2026', 'fy24-25-q4', bsSections(BS_CASH_BY_PERIOD['as-on-2026-04-30'], 26_400_000, 5_600_000, 8_900_000), priorAmountsFromSections(bsSections(BS_CASH_BY_PERIOD['as-on-2026-03-31'], 24_700_000, 5_900_000, 8_400_000)), 'As at 30 April 2026'),
     'fy24-25-q4': statement('balance-sheet', 'fy24-25-q4', 'fy24-25', bsSections(BS_CASH_BY_PERIOD['as-on-2026-03-31'], 24_700_000, 5_900_000, 8_400_000), priorAmountsFromSections(bsSections(BS_CASH_BY_PERIOD['as-on-2025-03-31'], 18_200_000, 5_200_000, 7_500_000)), 'As at 31 March 2026'),
-    'fy24-25': statement('balance-sheet', 'fy24-25', undefined, bsSections(BS_CASH_BY_PERIOD['as-on-2025-03-31'], 18_200_000, 5_200_000, 7_500_000), scalePrior(bsSections(BS_CASH_BY_PERIOD['as-on-2025-03-31'], 18_200_000, 5_200_000, 7_500_000), 0.86), 'As at 31 March 2025'),
+    'fy24-25': statement(
+      'balance-sheet',
+      'fy24-25',
+      undefined,
+      bsSections(BS_CASH_BY_PERIOD['as-on-2025-03-31'], 18_200_000, 5_200_000, 7_500_000),
+      scaleLineItems(bsSections(BS_CASH_BY_PERIOD['as-on-2025-03-31'], 18_200_000, 5_200_000, 7_500_000), {
+        'Reserves and surplus': 1.08,
+        'Cash and bank balances': 1.06,
+        'Trade receivables — marketplace settlements pending': 1.1,
+        'Inventories — raw materials': 1.05,
+        'Inventories — finished goods': 1.07,
+        'Short-term borrowings (working capital line)': 1.04,
+      }),
+      'As at 31 March 2025'
+    ),
   },
 };
 

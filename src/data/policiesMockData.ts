@@ -17,6 +17,9 @@ export const DEFAULT_THRESHOLDS: Threshold[] = [
   { agentId: 'krishan', key: 'founderPaymentCeiling', label: 'Akash approval ceiling (any payment)', unit: '₹', value: 500000, min: 100000, max: 2000000, step: 50000 },
   { agentId: 'krishan', key: 'briefTime', label: 'Brief send time', unit: 'time', value: '08:00' },
   { agentId: 'krishan', key: 'briefFormat', label: 'Brief format', unit: 'multi', value: ['concise'] },
+  { agentId: 'tara', key: 'replenish_auto_cap', label: 'Auto-place replenishment POs up to', unit: '₹', value: 50000, min: 0, max: 500000, step: 5000 },
+  { agentId: 'tara', key: 'ondemand_auto_cap', label: 'Auto-place on-demand POs up to', unit: '₹', value: 25000, min: 0, max: 200000, step: 5000 },
+  { agentId: 'tara', key: 'hero_stockout_days', label: 'Escalate hero SKU if cover under', unit: 'days', value: 7, min: 1, max: 30, step: 1 },
 ];
 
 export const POLICY_CHANGE_LOG = [

@@ -41,4 +41,14 @@ export const INLINE_ACTIONS: InlineActionMessage[] = [
       deepLink: { agentId: 'rohan', officeTab: 'Claims' },
     },
   },
+  {
+    id: 'action-tara-replenish',
+    agentId: 'tara',
+    ts: '08:40',
+    body: 'Tara found 5 hero SKUs under a week of cover (Charlotte Tilbury, Supergoop!) and drafted 2 replenishment POs worth ₹3.5L. Chanel N°5 on-demand POs were auto-placed within your band.',
+    cta: {
+      label: 'Review replenishment →',
+      deepLink: { agentId: 'tara', officeTab: 'Replenishment' },
+    },
+  },
 ];

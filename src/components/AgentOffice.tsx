@@ -15,6 +15,7 @@ import { MarketingEfficiencyScreen } from './MarketingEfficiencyScreen';
 import { ComplianceScreen } from './ComplianceScreen';
 import type { ComplianceTab } from './ComplianceScreen';
 import { OfficePlaceholder } from './OfficePlaceholder';
+import { InventoryScreen } from './InventoryScreen';
 import { Card, SectionHeader, StatusPill } from './shared/ui';
 
 const ANKITA_TAB_MAP: Record<string, ComplianceTab> = {
@@ -169,6 +170,10 @@ export function AgentOffice({ agentId, initialOfficeTab, onBack, onOpenChat }: A
       const tab = ANKITA_TAB_MAP[officeTab];
       if (tab) return <ComplianceScreen initialTab={tab} />;
       return <OfficePlaceholder title={officeTab} />;
+    }
+
+    if (agentId === 'tara') {
+      return <InventoryScreen officeTab={officeTab} embedded onOfficeTabChange={setOfficeTab} />;
     }
 
     return null;
